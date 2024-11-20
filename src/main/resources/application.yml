@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: game-logic
+
+  #MySQL ??
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tickuptest
+    username: root
+    password: 1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        show-sql: true
+
