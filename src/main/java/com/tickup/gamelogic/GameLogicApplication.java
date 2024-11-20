@@ -1,4 +1,4 @@
-package com.tickup.game_logic;
+package com.tickup.gamelogic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

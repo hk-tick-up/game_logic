@@ -1,4 +1,4 @@
-package com.tickup.game_logic;
+package com.tickup.gamelogic;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -11,7 +11,13 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
-    properties:
-      hibernate:
-        show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    show-sql: true
+
+#  sql:
+#    init:
+#      mode: always
 
