@@ -33,5 +33,16 @@ public class GameRooms {
     @Enumerated(EnumType.STRING)
     private GameType gameType;
 
+    public enum CurrentGameState {
+        ONGOING, //진행 중
+        MOVING_ON, //다음 턴으로 넘어가는 중
+        GAME_END // 게임 끝
+    }
+
+    public enum GameType {
+        BASIC,
+        CONTEST
+    }
+
 }
 

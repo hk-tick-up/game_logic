@@ -24,7 +24,7 @@ public class GameRules {
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private GameType gameType;
+    private GameRooms.GameType gameType;
 
     @Column(nullable = false)
     private int maxPlayers;
