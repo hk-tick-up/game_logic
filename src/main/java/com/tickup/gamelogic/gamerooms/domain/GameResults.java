@@ -1,11 +1,16 @@
-package com.tickup.gamelogic.domain;
+package com.tickup.gamelogic.gamerooms.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /*
- * Class name: CurrentPlayersInfo
- * Summary: CurrentPlayersInfo JPA entity class
+ * Class name: GameResults
+ * Summary: GameResults JPA entity class
  * Date: 2024.11.20
  * Write by: 양예현
  */
@@ -14,31 +19,29 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CurrentPlayersInfo {
+public class GameResults {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long currentPlayersInfoId;
+    private long gameResultsId;
 
     @Column(nullable = false)
     private String userId;
 
-    @Column
-    private int balance; // 현재 보유한 금액
-
-    @Column
-    private int netAssets; // 순 자산
+    @Column(nullable = false)
+    private int finalRank;
 
     @Column(nullable = false)
-    private double returnRate = 0; // 수익률
+    private int finalReturn;
 
     @Column(nullable = false)
-    private int valuationAmount = 0; // 평가 금액
-
-    @Column(nullable = false)
-    private int currentRank; // 순 자산 기반 랭킹
+    private Date endTime;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRoomsId;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GameType gameType;
 
 }

@@ -1,5 +1,6 @@
-package com.tickup.gamelogic.domain;
+package com.tickup.gamelogic.gamesettings.domain;
 
+import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /*
- * Class name: SoldShares
- * Summary: SoldShares JPA entity class
+ * Class name: CompanyInfos
+ * Summary: CompanyInfos JPA entity class
  * Date: 2024.11.20
  * Write by: 양예현
  */
@@ -17,25 +18,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SoldShares {
+public class CompanyInfos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long soldSharesId;
+    private long companyInfosId;
 
-    @Column(nullable = false)
-    private String userId;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String ticker;
 
     @Column(nullable = false)
-    private int shares;
+    private String companyName;
 
     @Column(nullable = false)
-    private int sellPrice;
-
-    @Column(nullable = false)
-    private int sellTurn;
+    private String industry;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")

@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.domain;
+package com.tickup.gamelogic.gamerooms.domain;
 
 public enum GameType {
     BASIC,

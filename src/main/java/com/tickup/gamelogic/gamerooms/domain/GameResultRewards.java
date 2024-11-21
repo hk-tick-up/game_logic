@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.domain;
+package com.tickup.gamelogic.gamerooms.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
