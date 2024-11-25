@@ -23,23 +23,26 @@ public class CurrentPlayersInfo {
     @Column(nullable = false)
     private String userId;
 
-    @Column
+    @Column(nullable = false)
     private int balance; // 현재 보유한 금액
 
-    @Column
+    @Column(nullable = false)
     private int netAssets; // 순 자산
 
     @Column(nullable = false)
-    private double returnRate = 0; // 수익률
+    private double returnRate; // 수익률
 
-    @Column(nullable = false)
-    private int valuationAmount = 0; // 평가 금액
+    @Column
+    private int valuationAmount; // 평가 금액
 
-    @Column(nullable = false)
-    private int currentRank; // 순 자산 기반 랭킹
+    @Column
+    private Integer currentRank; // 순 자산 기반 랭킹
+
+    @Column
+    private boolean isTurnEnd; // '턴 마침' 여부 (모든 사용자가 '턴 마침'이면 제한시간 전에 턴 넘어가도록)
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
 
 }

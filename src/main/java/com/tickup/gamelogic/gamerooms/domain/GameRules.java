@@ -27,6 +27,9 @@ public class GameRules {
     private GameType gameType;
 
     @Column(nullable = false)
+    private boolean isPublic;
+
+    @Column(nullable = false)
     private int maxPlayers;
 
     @Column(nullable = false)

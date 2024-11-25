@@ -40,5 +40,5 @@ public class SoldShares {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
 }

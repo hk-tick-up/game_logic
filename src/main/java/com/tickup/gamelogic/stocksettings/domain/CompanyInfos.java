@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.playersinfo.domain;
+package com.tickup.gamelogic.stocksettings.domain;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import jakarta.persistence.*;
@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /*
- * Class name: PlayerStatus
- * Summary: PlayerStatus JPA entity class
+ * Class name: CompanyInfos
+ * Summary: CompanyInfos JPA entity class
  * Date: 2024.11.20
  * Write by: 양예현
  */
@@ -18,19 +18,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PlayerStatus {
+public class CompanyInfos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long playerStatusId;
+    private long companyInfosId;
+
+    @Column(nullable = false, unique = true)
+    private String ticker;
 
     @Column(nullable = false)
-    private String userId;
+    private String companyName;
 
     @Column(nullable = false)
-    private boolean status = false;
+    private String industry;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
-
+    private GameRooms gameRooms;
 }

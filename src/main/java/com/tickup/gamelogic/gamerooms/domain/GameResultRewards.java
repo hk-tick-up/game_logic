@@ -30,7 +30,7 @@ public class GameResultRewards {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rules_id", referencedColumnName = "gameRulesId")
-    private GameRules gameRulesId;
+    private GameRules gameRules;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

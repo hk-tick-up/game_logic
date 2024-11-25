@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.gamesettings.domain;
+package com.tickup.gamelogic.stocksettings.domain;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import jakarta.persistence.*;
@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 /*
- * Class name: GameEvents
- * Summary: GameEvents JPA entity class
+ * Class name: StockDatas
+ * Summary: StockDatas JPA entity class
  * Date: 2024.11.20
  * Write by: 양예현
  */
@@ -20,20 +20,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GameEvents {
+public class StockDatas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameEventsId;
-
-    @Column(nullable = false)
-    private String eventContents;
-
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "stock_datas_id")
-    private StockDatas stockDatasId;
-
-    @Column(nullable = false)
-    private String ticker;
+    private long stockDatasId;
 
     @Column(nullable = false)
     private int turn;
@@ -41,7 +31,14 @@ public class GameEvents {
     @Column(nullable = false)
     private Date targetDate;
 
+    @Column(nullable = false)
+    private long stockPrice;
+
+    @Column(nullable = false)
+    private String ticker;
+
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
+
 }

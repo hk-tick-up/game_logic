@@ -1,7 +1,11 @@
 package com.tickup.gamelogic.gamerooms.domain;
 
+import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Class name: GameRooms
@@ -16,7 +20,8 @@ import lombok.*;
 @Builder
 public class GameRooms {
     @Id
-    private String gameRoomsId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long gameRoomsId;
 
     @Column
     private int currentTurn;
@@ -27,11 +32,18 @@ public class GameRooms {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rules_id")
-    private GameRules gameRulesId;
+    private GameRules gameRules;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private GameType gameType;
 
+    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CurrentPlayersInfo> currentPlayersInfos = new ArrayList<>();
+
+    public void addCurrentPlayersInfo(CurrentPlayersInfo currentPlayersInfo) {
+        currentPlayersInfos.add(currentPlayersInfo);
+    }
 }
 
