@@ -29,4 +29,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // WebSocket endpoint 정의
         registry.addEndpoint("ws").setAllowedOrigins("*").withSockJS();
     }
+
+
 }

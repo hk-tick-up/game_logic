@@ -4,6 +4,7 @@ import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,12 @@ public class GameRooms {
     @Column
     private int currentTurn;
 
+    @Column
+    private Instant currentTurnStartTime;
+
+    @Column
+    private int remainingTime;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CurrentGameState currentGameState;
@@ -41,7 +48,6 @@ public class GameRooms {
     @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CurrentPlayersInfo> currentPlayersInfos = new ArrayList<>();
-
     public void addCurrentPlayersInfo(CurrentPlayersInfo currentPlayersInfo) {
         currentPlayersInfos.add(currentPlayersInfo);
     }

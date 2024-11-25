@@ -36,7 +36,7 @@ public class GameRules {
     private int totalTurns;
 
     @Column(nullable = false)
-    private int turnTimeLimit;
+    private int remainingTime;
 
     @Column(nullable = false)
     private int initSeedMoney;

@@ -6,7 +6,6 @@ import java.util.List;
 
 public record InitGameRoomRequest(
         String gameType,
-        boolean isPublic,
         List<String> players
 ) {
 

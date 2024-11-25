@@ -1,6 +1,8 @@
 package com.tickup.gamelogic.gamerooms.service;
 
+import com.tickup.gamelogic.gamerooms.Request.InitGameProcessRequest;
 import com.tickup.gamelogic.gamerooms.Request.InitGameRoomRequest;
+import com.tickup.gamelogic.gamerooms.Response.InitGameProcessResponse;
 import com.tickup.gamelogic.gamerooms.Response.InitGameRoomResponse;
 import com.tickup.gamelogic.gamerooms.domain.CurrentGameState;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
@@ -13,9 +15,11 @@ import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
-public class GameRoomsServiceImpl implements GameRoomsService {
+public class InitGameRoomsServiceImpl implements InitGameRoomsService {
 
     private final GameRoomsRepository gameRoomRepository;
     private final GameRulesRepository gameRulesRepository;
@@ -31,14 +35,15 @@ public class GameRoomsServiceImpl implements GameRoomsService {
      */
     @Override
     public InitGameRoomResponse initGameRoom(InitGameRoomRequest request) {
-        GameRules gameRules = gameRulesRepository.findGameRulesByGameTypeAndIsPublic(
-                GameType.valueOf(request.gameType().toUpperCase()),
-                request.isPublic()
+        GameRules gameRules = gameRulesRepository.findGameRulesByGameType(
+                GameType.valueOf(request.gameType().toUpperCase())
         );
 
         // 방 정보 초기화
         GameRooms gameRoom = GameRooms.builder()
                 .currentTurn(1)
+                .currentTurnStartTime(Instant.now())
+                .remainingTime(gameRules.getRemainingTime())
                 .currentGameState(CurrentGameState.MOVING_ON)
                 .gameRules(gameRules)
                 .gameType(GameType.valueOf(request.gameType().toUpperCase()))
@@ -64,5 +69,13 @@ public class GameRoomsServiceImpl implements GameRoomsService {
        return InitGameRoomResponse.from(newGameRoom);
     }
 
+    @Override
+    public InitGameProcessResponse initGameProcess(InitGameProcessRequest request) {
+        // 총 턴수, 제한 시간 값 가져오기
+        GameRules gameRules = gameRulesRepository.findGameRulesByGameType(
+                GameType.valueOf(request.gameType().toUpperCase())
+        );
 
+        return InitGameProcessResponse.from(gameRules);
+    }
 }
