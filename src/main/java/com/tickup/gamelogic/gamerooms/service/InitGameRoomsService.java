@@ -10,5 +10,5 @@ public interface InitGameRoomsService {
     InitGameRoomResponse initGameRoom(InitGameRoomRequest initGameRoomRequest);
 
     // 게임 방 생성 시 총 턴 수 & 제한 시간 값 전달
-    InitGameProcessResponse initGameProcess(InitGameProcessRequest initGameProcessRequest);
+    // InitGameProcessResponse initGameProcess(InitGameProcessRequest initGameProcessRequest);
 }

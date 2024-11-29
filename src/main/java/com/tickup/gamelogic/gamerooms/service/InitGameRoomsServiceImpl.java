@@ -13,9 +13,11 @@ import com.tickup.gamelogic.gamerooms.repository.GameRulesRepository;
 import com.tickup.gamelogic.playersinfo.Repository.CurrentPlayersInfoRepository;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,8 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
         // 방 정보 초기화
         GameRooms gameRoom = GameRooms.builder()
                 .currentTurn(1)
-                .currentTurnStartTime(Instant.now())
+                .totalTurn(gameRules.getTotalTurns())
+                .currentTurnStartTime(LocalDateTime.now())
                 .remainingTime(gameRules.getRemainingTime())
                 .currentGameState(CurrentGameState.MOVING_ON)
                 .gameRules(gameRules)
@@ -69,13 +72,15 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
        return InitGameRoomResponse.from(newGameRoom);
     }
 
-    @Override
-    public InitGameProcessResponse initGameProcess(InitGameProcessRequest request) {
-        // 총 턴수, 제한 시간 값 가져오기
-        GameRules gameRules = gameRulesRepository.findGameRulesByGameType(
-                GameType.valueOf(request.gameType().toUpperCase())
-        );
-
-        return InitGameProcessResponse.from(gameRules);
-    }
+//    @Override
+//    public InitGameProcessResponse initGameProcess(InitGameProcessRequest request) {
+//        GameRooms gameRooms = gameRoomRepository.findById(request.gameRoomsId()).orElse(null);
+//
+//        // 총 턴수, 제한 시간 값 가져오기
+//        GameRules gameRules = gameRulesRepository.findGameRulesByGameType(
+//                GameType.valueOf(request.gameType().toUpperCase())
+//        );
+//
+//        return InitGameProcessResponse.from(gameRules);
+//    }
 }

@@ -2,6 +2,7 @@ spring:
   application:
     name: game-logic
 
+
   #MySQL ??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,6 +17,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     show-sql: true
+
 
 #  sql:
 #    init:

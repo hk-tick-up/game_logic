@@ -1,10 +1,12 @@
 package com.tickup.gamelogic.gamerooms.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +26,15 @@ public class GameRooms {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gameRoomsId;
 
+    @Column(nullable = false)
+    private int totalTurn;
+
     @Column
     private int currentTurn;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column
-    private Instant currentTurnStartTime;
+    private LocalDateTime currentTurnStartTime;
 
     @Column
     private int remainingTime;

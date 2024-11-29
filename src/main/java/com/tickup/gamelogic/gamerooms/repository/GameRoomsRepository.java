@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Repository
 public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
@@ -20,7 +21,7 @@ public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
             "    g.remainingTime = :remaining_time " +
             "WHERE g.gameRoomsId = :game_rooms_id")
     void updateGameRoomsState(@Param("game_rooms_id") Long gameRoomsId,
-                              @Param("curren_turn") int currentTurn,
-                              @Param("current_turn_start_time") Instant currentTurnStartTime,
+                              @Param("current_turn") int currentTurn,
+                              @Param("current_turn_start_time") LocalDateTime currentTurnStartTime,
                               @Param("remaining_time") int remainingTime);
 }
