@@ -41,7 +41,7 @@ public class CurrentPlayersInfo {
     @Column
     private boolean isTurnEnd; // '턴 마침' 여부 (모든 사용자가 '턴 마침'이면 제한시간 전에 턴 넘어가도록)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRooms;
 

@@ -5,6 +5,7 @@ import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +37,11 @@ public class GameRooms {
     @Column
     private LocalDateTime currentTurnStartTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Column
+    private LocalDateTime currentTurnEndTime;
+
+
     @Column
     private int remainingTime;
 
@@ -51,11 +57,22 @@ public class GameRooms {
     @Enumerated(EnumType.STRING)
     private GameType gameType;
 
-    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<CurrentPlayersInfo> currentPlayersInfos = new ArrayList<>();
     public void addCurrentPlayersInfo(CurrentPlayersInfo currentPlayersInfo) {
         currentPlayersInfos.add(currentPlayersInfo);
+    }
+
+    public void updateTurn(int nextTurn, LocalDateTime nextTurnEndTime) {
+        this.currentTurn = nextTurn;
+        this.currentTurnStartTime = LocalDateTime.now();
+        this.currentTurnEndTime = nextTurnEndTime;
+
+        // 게임 종료 조건 체크
+        if (nextTurn >= this.totalTurn) {
+            this.currentGameState = CurrentGameState.GAME_END;
+        }
     }
 }
 

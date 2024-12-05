@@ -8,16 +8,16 @@ import java.time.LocalDateTime;
 public record InitGameProcessResponse(
        int currentTurn,
        int totalTurns,
-       int remainingTime,
-       LocalDateTime turnStartTime
+       LocalDateTime now,
+       LocalDateTime currentTurnEndTime
 
 ) {
     public static InitGameProcessResponse from (GameRooms gameRooms) {
         return new InitGameProcessResponse(
                 gameRooms.getCurrentTurn(),
                 gameRooms.getTotalTurn(),
-                gameRooms.getRemainingTime(),
-                gameRooms.getCurrentTurnStartTime());
+                LocalDateTime.now(),
+                gameRooms.getCurrentTurnEndTime());
 
     }
 }

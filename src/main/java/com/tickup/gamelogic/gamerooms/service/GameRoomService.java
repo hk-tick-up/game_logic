@@ -1,9 +1,16 @@
 package com.tickup.gamelogic.gamerooms.service;
 
-import com.tickup.gamelogic.gamerooms.Response.TurnUpdateResponse;
+import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
 
 public interface GameRoomService {
     // 턴 변경
-    TurnUpdateResponse updateTurn(Long gameRoomId);
-    void sendInitialGameState(Long gameRoomId);
+//    TurnUpdateResponse updateTurn(Long gameRoomId);
+//    TurnUpdateResponse sendInitialGameState(Long gameRoomId);
+    void initializeCache();
+    void handleGameStateUpdate(GameStateUpdateRequest request);
+    void processNextTurn(Long gameRoomId);
+    void updatePlayerCount(Long gameRoomId, int count);
+    void cleanupGameRoom(Long gameRoomId);
+
+
 }

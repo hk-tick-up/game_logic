@@ -46,6 +46,7 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
                 .currentTurn(1)
                 .totalTurn(gameRules.getTotalTurns())
                 .currentTurnStartTime(LocalDateTime.now())
+                .currentTurnEndTime(LocalDateTime.now().plusSeconds(gameRules.getRemainingTime()))
                 .remainingTime(gameRules.getRemainingTime())
                 .currentGameState(CurrentGameState.MOVING_ON)
                 .gameRules(gameRules)
@@ -72,15 +73,10 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
        return InitGameRoomResponse.from(newGameRoom);
     }
 
-//    @Override
-//    public InitGameProcessResponse initGameProcess(InitGameProcessRequest request) {
-//        GameRooms gameRooms = gameRoomRepository.findById(request.gameRoomsId()).orElse(null);
-//
-//        // 총 턴수, 제한 시간 값 가져오기
-//        GameRules gameRules = gameRulesRepository.findGameRulesByGameType(
-//                GameType.valueOf(request.gameType().toUpperCase())
-//        );
-//
-//        return InitGameProcessResponse.from(gameRules);
-//    }
+    @Override
+    public InitGameProcessResponse initGameProcess(Long gameRoomId) {
+        GameRooms gameRooms = gameRoomRepository.findById(gameRoomId).orElse(null);
+
+        return InitGameProcessResponse.from(gameRooms);
+    }
 }
