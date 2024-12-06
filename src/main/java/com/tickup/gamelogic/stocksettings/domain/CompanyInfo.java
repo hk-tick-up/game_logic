@@ -7,11 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /*
- * Class name: StockDatas
- * Summary: StockDatas JPA entity class
+ * Class name: CompanyInfos
+ * Summary: CompanyInfos JPA entity class
  * Date: 2024.11.20
  * Write by: 양예현
  */
@@ -20,25 +18,21 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StockDatas {
+public class CompanyInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long stockDatasId;
+    private long companyInfoId;
 
-    @Column(nullable = false)
-    private int turn;
-
-    @Column(nullable = false)
-    private Date targetDate;
-
-    @Column(nullable = false)
-    private long stockPrice;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String ticker;
+
+    @Column(nullable = false)
+    private String companyName;
+
+    @Column(nullable = false)
+    private String industry;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRooms;
-
 }

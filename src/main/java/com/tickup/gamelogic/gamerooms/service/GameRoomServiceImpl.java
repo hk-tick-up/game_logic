@@ -103,7 +103,8 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
 
         // 다음 턴 정보 계산
         int nextTurn = gameRoom.getCurrentTurn() + 1;
-        LocalDateTime nextTurnEndTime = LocalDateTime.now().plusMinutes(5);
+        LocalDateTime nextTurnEndTime = LocalDateTime.now().plusSeconds(gameRoom.getRemainingTime());
+//        LocalDateTime nextTurnEndTime = LocalDateTime.now().plusMinutes(5);
 
         // 게임룸 업데이트
         gameRoom.updateTurn(nextTurn, nextTurnEndTime);

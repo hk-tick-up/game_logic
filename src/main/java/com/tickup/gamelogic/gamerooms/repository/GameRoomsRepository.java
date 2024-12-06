@@ -1,6 +1,7 @@
 package com.tickup.gamelogic.gamerooms.repository;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
+import com.tickup.gamelogic.stocksettings.domain.CompanyInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
@@ -24,4 +26,9 @@ public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
                               @Param("current_turn") int currentTurn,
                               @Param("current_turn_start_time") LocalDateTime currentTurnStartTime,
                               @Param("remaining_time") int remainingTime);
+
+    @Query("SELECT CompanyInfo.ticker " +
+            "FROM GameRooms g " +
+            "WHERE g.gameRoomsId = :game_rooms_id")
+    List<String> findTickersByGameRoomsId(@Param("game_rooms_id") Long gameRoomsId);
 }

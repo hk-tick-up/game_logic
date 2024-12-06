@@ -25,12 +25,12 @@ public class GameEvents {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long gameEventsId;
 
-    @Column(nullable = false)
+    @Column
     private String eventContents;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "stock_datas_id")
-    private StockDatas stockDatasId;
+    @JoinColumn(nullable = false, name = "stock_data_id")
+    private StockData stockDataId;
 
     @Column(nullable = false)
     private String ticker;

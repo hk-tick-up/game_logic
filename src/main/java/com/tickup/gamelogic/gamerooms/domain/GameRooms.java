@@ -2,6 +2,7 @@ package com.tickup.gamelogic.gamerooms.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
+import com.tickup.gamelogic.stocksettings.domain.CompanyInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -62,6 +63,12 @@ public class GameRooms {
     private List<CurrentPlayersInfo> currentPlayersInfos = new ArrayList<>();
     public void addCurrentPlayersInfo(CurrentPlayersInfo currentPlayersInfo) {
         currentPlayersInfos.add(currentPlayersInfo);
+    }
+
+    @OneToMany(mappedBy = "companyInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CompanyInfo> companyInfos = new ArrayList<>();
+    public void addCompanyInfo(CompanyInfo companyInfo) {
+        companyInfos.add(companyInfo);
     }
 
     public void updateTurn(int nextTurn, LocalDateTime nextTurnEndTime) {
