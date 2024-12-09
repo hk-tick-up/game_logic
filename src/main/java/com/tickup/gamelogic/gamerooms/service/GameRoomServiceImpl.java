@@ -7,10 +7,7 @@ import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
 import com.tickup.gamelogic.gamerooms.Response.GameStateUpdateResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
-import com.tickup.gamelogic.stocksettings.response.TurnStockDataResponse;
-import com.tickup.gamelogic.stocksettings.service.StockSettingsService;
 import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +51,6 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
 
     // 서버 시작 시 캐시 초기화
     @Override
-//    @PostConstruct
     @Transactional
     public void initializeCache() {
         log.info("Initializing cache...");
@@ -115,23 +111,6 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
 
         // 턴 종료 확인 캐시 초기화
         turnEndConfirmations.get(gameRoomId).clear();
-
-//        // 새로운 턴 정보 브로드캐스트
-//        GameStateUpdateResponse response = GameStateUpdateResponse.from(gameRoomId, nextTurn, nextTurnEndTime);
-//        messagingTemplate.convertAndSend(
-//                "/topic/gameRoom/" + gameRoomId + "/turnChange",
-//                response
-//        );
-//
-//        // 새로운 턴의 주식 데이터 조회 및 브로드캐스트
-//        TurnStockDataResponse stockResponse = stockSettingsService.getStockDataForTurn(
-//                gameRoomId,
-//                nextTurn
-//        );
-//        messagingTemplate.convertAndSend(
-//                "/topic/gameRoom/" + gameRoomId + "/stockUpdate",
-//                stockResponse
-//        );
 
         // 턴 정보 및 주식 데이터 전송
         sendTurnData(gameRoomId, nextTurn, nextTurnEndTime);

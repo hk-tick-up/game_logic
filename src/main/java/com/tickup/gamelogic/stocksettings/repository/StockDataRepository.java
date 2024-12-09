@@ -11,19 +11,15 @@ import java.util.List;
 
 @Repository
 public interface StockDataRepository extends JpaRepository<StockData, Long> {
-    @Query("SELECT sd.ticker as ticker, " +
-            "sd.stockPrice as stockPrice, " +
-            "sd.changeRate as changeRate, " +
-            "ge.eventContents as eventCotents " +
+    @Query("SELECT sd " +
             "FROM StockData sd " +
-            "INNER JOIN GameEvents ge ON sd.ticker = ge.ticker " +
-            "AND sd.gameRooms.gameRoomsId = ge.gameRooms.gameRoomsId " +
-            "AND sd.turn = ge.turn " +
+            "JOIN FETCH sd.gameRooms gr " +
+            "LEFT JOIN FETCH gr.gameEvents ge " +
             "WHERE sd.gameRooms.gameRoomsId = :gameRoomId " +
             "AND sd.turn = :turn " +
-            "AND sd.ticker IN :tickers"
-            )
-    List<StockTurnDataProjection> findTurnDataByGameRoomIdAndTurnAndTickersIn(
+            "AND ge.turn = :turn " +
+            "AND sd.ticker IN :tickers")
+    List<StockData> findTurnDataWithEventsByGameRoomIdAndTurnAndTickersIn(
             @Param("gameRoomId") Long gameRoomId,
             @Param("turn") int turn,
             @Param("tickers") List<String> tickers

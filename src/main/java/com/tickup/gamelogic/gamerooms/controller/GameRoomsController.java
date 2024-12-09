@@ -1,7 +1,6 @@
 package com.tickup.gamelogic.gamerooms.controller;
 
 import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
-import com.tickup.gamelogic.gamerooms.Request.InitGameProcessRequest;
 import com.tickup.gamelogic.gamerooms.Request.InitGameRoomRequest;
 import com.tickup.gamelogic.gamerooms.Response.InitGameProcessResponse;
 import com.tickup.gamelogic.gamerooms.Response.InitGameRoomResponse;
@@ -9,7 +8,6 @@ import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.service.GameRoomServiceImpl;
 import com.tickup.gamelogic.gamerooms.service.InitGameRoomsServiceImpl;
-import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

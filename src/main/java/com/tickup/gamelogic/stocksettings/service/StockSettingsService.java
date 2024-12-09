@@ -6,7 +6,6 @@ import com.tickup.gamelogic.stocksettings.response.TurnStockDataResponse;
 import java.util.List;
 
 public interface StockSettingsService {
-    //void generateScenarioForGameRoom(GameRooms gameRoom);
     List<String> getGameRoomTickers(Long gameRoomId);
     TurnStockDataResponse getStockDataForTurn(Long gameRoomId, int currentTurn);
     void sendStockUpdate(Long gameRoomId, int currentTurn);

@@ -6,8 +6,6 @@ import java.time.LocalDateTime;
 
 public interface GameRoomService {
     // 턴 변경
-//    TurnUpdateResponse updateTurn(Long gameRoomId);
-//    TurnUpdateResponse sendInitialGameState(Long gameRoomId);
     void initializeCache();
     void handleGameStateUpdate(GameStateUpdateRequest request);
     void processNextTurn(Long gameRoomId);

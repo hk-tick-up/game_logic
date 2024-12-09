@@ -1,9 +1,10 @@
 package com.tickup.gamelogic.stocksettings.service;
 
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
+import com.tickup.gamelogic.stocksettings.domain.GameEvents;
+import com.tickup.gamelogic.stocksettings.domain.StockData;
 import com.tickup.gamelogic.stocksettings.repository.CompanyInfoRepository;
 import com.tickup.gamelogic.stocksettings.repository.StockDataRepository;
-import com.tickup.gamelogic.stocksettings.repository.StockTurnDataProjection;
 import com.tickup.gamelogic.stocksettings.response.CompanyTurnResponse;
 import com.tickup.gamelogic.stocksettings.response.TurnStockDataResponse;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,23 +43,25 @@ public class StockSettingsServiceImpl implements StockSettingsService {
     public TurnStockDataResponse getStockDataForTurn(Long gameRoomId, int currentTurn) {
         List<String> tickers = getGameRoomTickers(gameRoomId);
 
-        List<StockTurnDataProjection> projections = stockDataRepository
-                .findTurnDataByGameRoomIdAndTurnAndTickersIn(gameRoomId, currentTurn, tickers);
+        // StockData와 GameEvents를 함께 가져오는 쿼리
+        List<StockData> stockDataList = stockDataRepository.findTurnDataWithEventsByGameRoomIdAndTurnAndTickersIn(
+                gameRoomId, currentTurn, tickers
+        );
 
-        Map<String, CompanyTurnResponse> responseMap = projections.stream()
-                .map(proj -> new CompanyTurnResponse(
-                        proj.getTicker(),
-                        proj.getStockPrice(),
-                        proj.getChangeRate(),
-                        proj.getEventContents()
-                ))
+        // CompanyTurnResponse 생성
+        Map<String, CompanyTurnResponse> companyTurnResponses = stockDataList.stream()
                 .collect(Collectors.toMap(
-                        CompanyTurnResponse::ticker,
-                        response -> response
+                        StockData::getTicker,
+                        stockData -> {
+                            GameEvents gameEvent = stockData.getGameRooms().getGameEvents().stream()
+                                    .filter(event -> event.getTicker().equals(stockData.getTicker()))
+                                    .findFirst()
+                                    .orElse(null);
+                            return CompanyTurnResponse.from(stockData, gameEvent);
+                        }
                 ));
 
-        return TurnStockDataResponse.from(gameRoomId, currentTurn, responseMap);
-
+        return TurnStockDataResponse.from(gameRoomId, currentTurn, companyTurnResponses);
     }
 
     @Override

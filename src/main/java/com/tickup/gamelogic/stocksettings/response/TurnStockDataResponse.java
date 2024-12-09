@@ -6,6 +6,7 @@ public record TurnStockDataResponse(
         Long GameRoomId,
         int currentTurn,
         Map<String, CompanyTurnResponse> companyTurnResponse
+
 ) {
     public static TurnStockDataResponse from(
         Long GameRoomId,
