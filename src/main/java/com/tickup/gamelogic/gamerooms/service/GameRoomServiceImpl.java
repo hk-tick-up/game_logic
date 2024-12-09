@@ -7,6 +7,9 @@ import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
 import com.tickup.gamelogic.gamerooms.Response.GameStateUpdateResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
+import com.tickup.gamelogic.stocksettings.response.TurnStockDataResponse;
+import com.tickup.gamelogic.stocksettings.service.StockSettingsService;
+import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameRoomServiceImpl implements GameRoomService, ApplicationListener<ContextRefreshedEvent> {
     private final GameRoomsRepository gameRoomsRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final StockSettingsServiceImpl stockSettingsService;
 
     private static final int SYNC_INTERVAL = 1000; // 1초
 
@@ -104,7 +108,6 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         // 다음 턴 정보 계산
         int nextTurn = gameRoom.getCurrentTurn() + 1;
         LocalDateTime nextTurnEndTime = LocalDateTime.now().plusSeconds(gameRoom.getRemainingTime());
-//        LocalDateTime nextTurnEndTime = LocalDateTime.now().plusMinutes(5);
 
         // 게임룸 업데이트
         gameRoom.updateTurn(nextTurn, nextTurnEndTime);
@@ -113,15 +116,41 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         // 턴 종료 확인 캐시 초기화
         turnEndConfirmations.get(gameRoomId).clear();
 
-        // 새로운 턴 정보 브로드캐스트
-        GameStateUpdateResponse response = GameStateUpdateResponse.from(gameRoomId, nextTurn, nextTurnEndTime);
+//        // 새로운 턴 정보 브로드캐스트
+//        GameStateUpdateResponse response = GameStateUpdateResponse.from(gameRoomId, nextTurn, nextTurnEndTime);
+//        messagingTemplate.convertAndSend(
+//                "/topic/gameRoom/" + gameRoomId + "/turnChange",
+//                response
+//        );
+//
+//        // 새로운 턴의 주식 데이터 조회 및 브로드캐스트
+//        TurnStockDataResponse stockResponse = stockSettingsService.getStockDataForTurn(
+//                gameRoomId,
+//                nextTurn
+//        );
+//        messagingTemplate.convertAndSend(
+//                "/topic/gameRoom/" + gameRoomId + "/stockUpdate",
+//                stockResponse
+//        );
 
+        // 턴 정보 및 주식 데이터 전송
+        sendTurnData(gameRoomId, nextTurn, nextTurnEndTime);
+
+    }
+
+    @Override
+    public void sendTurnData(Long gameRoomId, int turn, LocalDateTime turnEndTime) {
+        // 턴 정보 브로드캐스트
+        GameStateUpdateResponse response = GameStateUpdateResponse.from(gameRoomId, turn, turnEndTime);
         messagingTemplate.convertAndSend(
                 "/topic/gameRoom/" + gameRoomId + "/turnChange",
                 response
         );
 
-        log.info("Turn advanced for game room {}: Turn {}", gameRoomId, nextTurn);
+        // 주식 데이터 브로드캐스트
+        stockSettingsService.sendStockUpdate(gameRoomId, turn);
+
+        log.info("Data sent for game room {}: Turn {}", gameRoomId, turn);
     }
 
     @Override

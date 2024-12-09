@@ -19,7 +19,7 @@ public interface StockDataRepository extends JpaRepository<StockData, Long> {
             "INNER JOIN GameEvents ge ON sd.ticker = ge.ticker " +
             "AND sd.gameRooms.gameRoomsId = ge.gameRooms.gameRoomsId " +
             "AND sd.turn = ge.turn " +
-            "WHERE sd.gameRooms.gameRoomsId =: gameRoomId " +
+            "WHERE sd.gameRooms.gameRoomsId = :gameRoomId " +
             "AND sd.turn = :turn " +
             "AND sd.ticker IN :tickers"
             )

@@ -27,8 +27,8 @@ public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
                               @Param("current_turn_start_time") LocalDateTime currentTurnStartTime,
                               @Param("remaining_time") int remainingTime);
 
-    @Query("SELECT CompanyInfo.ticker " +
-            "FROM GameRooms g " +
-            "WHERE g.gameRoomsId = :game_rooms_id")
-    List<String> findTickersByGameRoomsId(@Param("game_rooms_id") Long gameRoomsId);
+    @Query("SELECT ci.ticker FROM GameRooms gr " +
+            "JOIN gr.companyInfos ci " +
+            "WHERE gr.gameRoomsId = :gameRoomId")
+    List<String> findTickersByGameRoomsId(@Param("gameRoomId") Long gameRoomsId);
 }

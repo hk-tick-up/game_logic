@@ -5,8 +5,11 @@ import com.tickup.gamelogic.gamerooms.Request.InitGameProcessRequest;
 import com.tickup.gamelogic.gamerooms.Request.InitGameRoomRequest;
 import com.tickup.gamelogic.gamerooms.Response.InitGameProcessResponse;
 import com.tickup.gamelogic.gamerooms.Response.InitGameRoomResponse;
+import com.tickup.gamelogic.gamerooms.domain.GameRooms;
+import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.service.GameRoomServiceImpl;
 import com.tickup.gamelogic.gamerooms.service.InitGameRoomsServiceImpl;
+import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,8 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +30,7 @@ public class GameRoomsController {
 
     private final InitGameRoomsServiceImpl initGameRoomsService;
     private final GameRoomServiceImpl gameRoomService;
+    private final GameRoomsRepository gameRoomsRepository;
 
     /**
      * 게임 방 초기화
@@ -74,4 +80,17 @@ public class GameRoomsController {
         log.info("Game room ended: {}", gameRoomId);
         gameRoomService.cleanupGameRoom(gameRoomId);
     }
+
+    @MessageMapping("/gameRoom/{gameRoomId}/fetchInitialTurnData")
+    public void fetchInitialTurnData(@DestinationVariable Long gameRoomId) {
+        // 현재 턴 정보 및 주식 데이터를 브로드캐스트
+        GameRooms gameRoom = gameRoomsRepository.findById(gameRoomId)
+                .orElseThrow(() -> new IllegalStateException("Game room not found: " + gameRoomId));
+
+        int currentTurn = gameRoom.getCurrentTurn();
+        LocalDateTime turnEndTime = gameRoom.getCurrentTurnEndTime();
+
+        gameRoomService.sendTurnData(gameRoomId, currentTurn, turnEndTime);
+    }
+
 }

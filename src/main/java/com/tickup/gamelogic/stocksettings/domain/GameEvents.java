@@ -30,7 +30,7 @@ public class GameEvents {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "stock_data_id")
-    private StockData stockDataId;
+    private StockData stockData;
 
     @Column(nullable = false)
     private String ticker;

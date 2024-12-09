@@ -12,6 +12,7 @@ import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.repository.GameRulesRepository;
 import com.tickup.gamelogic.playersinfo.Repository.CurrentPlayersInfoRepository;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
+import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,8 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
 
     private final GameRoomsRepository gameRoomRepository;
     private final GameRulesRepository gameRulesRepository;
-    private final CurrentPlayersInfoRepository currentPlayersInfoRepository;
+    private final StockSettingsServiceImpl stockSettingsService;
+    private final GameRoomServiceImpl gameRoomService;
 
     /*
      * Class name: initGameRoom
@@ -75,7 +77,11 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
 
     @Override
     public InitGameProcessResponse initGameProcess(Long gameRoomId) {
-        GameRooms gameRooms = gameRoomRepository.findById(gameRoomId).orElse(null);
+        GameRooms gameRooms = gameRoomRepository.findById(gameRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Game room not found: " + gameRoomId));
+
+        // 1턴 데이터와 초기화 데이터 WebSocket으로 전송
+        stockSettingsService.sendStockUpdate(gameRoomId, gameRooms.getCurrentTurn());
 
         return InitGameProcessResponse.from(gameRooms);
     }

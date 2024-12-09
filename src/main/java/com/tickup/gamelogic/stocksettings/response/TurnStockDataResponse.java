@@ -7,7 +7,7 @@ public record TurnStockDataResponse(
         int currentTurn,
         Map<String, CompanyTurnResponse> companyTurnResponse
 ) {
-    public static TurnStockDataResponse of(
+    public static TurnStockDataResponse from(
         Long GameRoomId,
         int currentTurn,
         Map<String, CompanyTurnResponse> companyTurnResponse

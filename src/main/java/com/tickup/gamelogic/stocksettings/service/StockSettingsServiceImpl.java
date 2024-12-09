@@ -1,14 +1,14 @@
 package com.tickup.gamelogic.stocksettings.service;
 
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
-import com.tickup.gamelogic.stocksettings.domain.CompanyInfo;
-import com.tickup.gamelogic.stocksettings.domain.GameEvents;
-import com.tickup.gamelogic.stocksettings.domain.StockData;
 import com.tickup.gamelogic.stocksettings.repository.CompanyInfoRepository;
 import com.tickup.gamelogic.stocksettings.repository.StockDataRepository;
+import com.tickup.gamelogic.stocksettings.repository.StockTurnDataProjection;
 import com.tickup.gamelogic.stocksettings.response.CompanyTurnResponse;
 import com.tickup.gamelogic.stocksettings.response.TurnStockDataResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class StockSettingsServiceImpl implements StockSettingsService {
 
     private final CompanyInfoRepository companyInfoRepository;
@@ -29,24 +31,51 @@ public class StockSettingsServiceImpl implements StockSettingsService {
     private final ConcurrentHashMap<Long, List<String>> gameRoomTickers = new ConcurrentHashMap<>();
     private final StockDataRepository stockDataRepository;
 
+    @Override
     public List<String> getGameRoomTickers(Long gameRoomId) {
         return gameRoomTickers.computeIfAbsent(gameRoomId,
                 id -> gameRoomsRepository.findTickersByGameRoomsId(id));
     }
 
+    @Override
     public TurnStockDataResponse getStockDataForTurn(Long gameRoomId, int currentTurn) {
         List<String> tickers = getGameRoomTickers(gameRoomId);
 
-        Map<String, StockData> stockDataMap = stockDataRepository
-                .findByGameRoomsIdAndTickerAndTurn(gameRoomId, currentTurn, tickers)
-                .stream()
+        List<StockTurnDataProjection> projections = stockDataRepository
+                .findTurnDataByGameRoomIdAndTurnAndTickersIn(gameRoomId, currentTurn, tickers);
+
+        Map<String, CompanyTurnResponse> responseMap = projections.stream()
+                .map(proj -> new CompanyTurnResponse(
+                        proj.getTicker(),
+                        proj.getStockPrice(),
+                        proj.getChangeRate(),
+                        proj.getEventContents()
+                ))
                 .collect(Collectors.toMap(
-                        StockData::getTicker,
-                        stockData -> stockData
+                        CompanyTurnResponse::ticker,
+                        response -> response
                 ));
 
-        Map<String, GameEvents> gameEventsMap = gameRoomsRepository
-                .
+        return TurnStockDataResponse.from(gameRoomId, currentTurn, responseMap);
+
+    }
+
+    @Override
+    public void sendStockUpdate(Long gameRoomId, int currentTurn) {
+        try {
+            TurnStockDataResponse stockData = getStockDataForTurn(gameRoomId, currentTurn);
+            messagingTemplate.convertAndSend(
+                    "/topic/gameRoom/" + gameRoomId + "/stockUpdate",
+                    stockData
+            );
+            log.info("Stock data sent for game room {} turn {}", gameRoomId, currentTurn);
+        } catch (Exception e) {
+            log.error("Failed to send stock data for game room {} turn {}: {}", gameRoomId, currentTurn, e.getMessage());
+            messagingTemplate.convertAndSend(
+                    "/topic/gameRoom/" + gameRoomId + "/error",
+                    "Failed to load stock data for turn " + currentTurn
+            );
+        }
     }
 
 
