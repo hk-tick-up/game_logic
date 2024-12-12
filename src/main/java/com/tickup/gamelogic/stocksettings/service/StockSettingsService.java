@@ -9,4 +9,5 @@ public interface StockSettingsService {
     List<String> getGameRoomTickers(Long gameRoomId);
     TurnStockDataResponse getStockDataForTurn(Long gameRoomId, int currentTurn);
     void sendStockUpdate(Long gameRoomId, int currentTurn);
+    void setGameScenario(Long gameRoomId, int currentTurn);
 }

@@ -6,8 +6,14 @@ spring:
   #MySQL ??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/tickuptest
+    jdbc-url: jdbc:mysql://localhost:3306/tickuptest?createDatabaseIfNotExist=true
     username: root
+    password: root
+
+  ml-datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://15.152.37.58:3306/tickup
+    username: mlops
     password: 1234
 
   jpa:
@@ -17,9 +23,24 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     show-sql: true
+    properties:
+      format-sql: true
 
 
 #  sql:
 #    init:
 #      mode: always
 
+
+  jmx:
+    enabled: false
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        cfg.AnnotationBinder: DEBUG
+#        SQL: DEBUG
+#        tool:
+#          hbm2ddl: TRACE

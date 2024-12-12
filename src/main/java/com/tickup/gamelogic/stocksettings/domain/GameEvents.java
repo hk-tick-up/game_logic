@@ -28,7 +28,7 @@ public class GameEvents {
     @Column
     private String eventContents;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(nullable = false, name = "stock_data_id")
     private StockData stockData;
 
@@ -41,7 +41,7 @@ public class GameEvents {
     @Column(nullable = false)
     private Date targetDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRooms;
 }

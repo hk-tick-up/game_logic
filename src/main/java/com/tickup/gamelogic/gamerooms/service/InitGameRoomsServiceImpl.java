@@ -52,7 +52,7 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
                 .build();
 
         // 게임 방에 있는 플레이어 정보 초기화
-       request.players().forEach(player -> {
+        request.players().forEach(player -> {
             CurrentPlayersInfo currentPlayersInfo = CurrentPlayersInfo.builder()
                     .userId(player) // -> 여러명이니까 List에 있는만큼 build 반복문으로?
                     .balance(gameRules.getInitSeedMoney())
@@ -67,7 +67,10 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
             gameRoom.addCurrentPlayersInfo(currentPlayersInfo);
         });
 
-       GameRooms newGameRoom = gameRoomRepository.save(gameRoom);
+        GameRooms newGameRoom = gameRoomRepository.save(gameRoom);
+
+        // 게임 시나리오 설정
+//        stockSettingsService.setGameScenario(newGameRoom.getGameRoomsId(), newGameRoom.getCurrentTurn());
 
        return InitGameRoomResponse.from(newGameRoom);
     }
@@ -77,8 +80,11 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
         GameRooms gameRooms = gameRoomRepository.findById(gameRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("Game room not found: " + gameRoomId));
 
+
+        // 게임 시나리오 설정
+        stockSettingsService.setGameScenario(gameRoomId, gameRooms.getCurrentTurn());
         // 1턴 데이터와 초기화 데이터 WebSocket으로 전송
-        stockSettingsService.sendStockUpdate(gameRoomId, gameRooms.getCurrentTurn());
+//        stockSettingsService.sendStockUpdate(gameRoomId, gameRooms.getCurrentTurn());
 
         return InitGameProcessResponse.from(gameRooms);
     }
