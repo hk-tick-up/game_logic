@@ -7,7 +7,9 @@ import com.tickup.gamelogic.gamerooms.request.GameStateUpdateRequest;
 import com.tickup.gamelogic.gamerooms.response.GameStateUpdateResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
+import com.tickup.gamelogic.gamerooms.response.RankingResponse;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
+import com.tickup.gamelogic.playersinfo.service.RankingServiceImpl;
 import com.tickup.gamelogic.playersinfo.service.TradeServiceImpl;
 import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class GameRoomServiceImpl implements GameRoomService, ApplicationListener<ContextRefreshedEvent> {
     private final GameRoomsRepository gameRoomsRepository;
-    private final SimpMessagingTemplate messagingTemplate;
     private final StockSettingsServiceImpl stockSettingsService;
     private final TradeServiceImpl tradeService;
+    private final RankingServiceImpl rankingService;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     // 게임방별 턴 종료 확인을 위한 캐시
     private final ConcurrentHashMap<Long, Set<String>> turnEndConfirmations = new ConcurrentHashMap<>();
@@ -119,6 +124,10 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         // 모든 플레이어의 투자 정보 업데이트 전송
         tradeService.sendTurnInvestmentUpdates(gameRoom);
 
+        // 랭킹 업데이트
+        rankingService.updateRankings(gameRoom);
+        sendRankingUpdate(gameRoom);
+
     }
 
     @Override
@@ -149,6 +158,22 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         turnEndConfirmations.remove(gameRoomId);
         roomPlayerCounts.remove(gameRoomId);
         log.info("Cleaned up cache for game room: {}", gameRoomId);
+    }
+
+    @Override
+    public void sendRankingUpdate(GameRooms gameRoom) {
+        List<RankingResponse> rankings
+                = gameRoom.getCurrentPlayersInfos().stream()
+                .map(RankingResponse::from)
+                .collect(Collectors.toList());
+
+        messagingTemplate.convertAndSend(
+                "/topic/gameRoom/" + gameRoom.getGameRoomsId() + "/rankings",
+                rankings
+        );
+
+        log.info("Sending ranking update for gameRoom {}: {} players",
+                gameRoom.getGameRoomsId(), rankings.size());
     }
 
 }
