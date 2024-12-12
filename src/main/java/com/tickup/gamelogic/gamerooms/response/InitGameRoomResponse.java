@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.gamerooms.Response;
+package com.tickup.gamelogic.gamerooms.response;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 

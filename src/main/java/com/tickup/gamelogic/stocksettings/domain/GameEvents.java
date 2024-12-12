@@ -23,7 +23,7 @@ import java.util.Date;
 public class GameEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameEventsId;
+    private Long gameEventsId;
 
     @Column
     private String eventContents;

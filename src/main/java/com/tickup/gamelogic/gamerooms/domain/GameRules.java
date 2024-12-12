@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class GameRules {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameRulesId;
+    private Long gameRulesId;
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)

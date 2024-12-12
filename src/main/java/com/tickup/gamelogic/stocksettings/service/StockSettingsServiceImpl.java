@@ -36,7 +36,7 @@ public class StockSettingsServiceImpl implements StockSettingsService {
     @Override
     public List<String> getGameRoomTickers(Long gameRoomId) {
         return gameRoomTickers.computeIfAbsent(gameRoomId,
-                id -> gameRoomsRepository.findTickersByGameRoomsId(id));
+                gameRoomsRepository::findTickersByGameRoomsId);
     }
 
     @Override

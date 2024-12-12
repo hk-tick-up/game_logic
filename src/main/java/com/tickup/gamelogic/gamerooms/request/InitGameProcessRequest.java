@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.gamerooms.Request;
+package com.tickup.gamelogic.gamerooms.request;
 
 public record InitGameProcessRequest(
         Long gameRoomsId

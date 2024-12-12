@@ -3,10 +3,12 @@ package com.tickup.gamelogic.gamerooms.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
-import com.tickup.gamelogic.gamerooms.Response.GameStateUpdateResponse;
+import com.tickup.gamelogic.gamerooms.request.GameStateUpdateRequest;
+import com.tickup.gamelogic.gamerooms.response.GameStateUpdateResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
+import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
+import com.tickup.gamelogic.playersinfo.service.TradeServiceImpl;
 import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,7 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
     private final GameRoomsRepository gameRoomsRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final StockSettingsServiceImpl stockSettingsService;
-
-    private static final int SYNC_INTERVAL = 1000; // 1초
+    private final TradeServiceImpl tradeService;
 
     // 게임방별 턴 종료 확인을 위한 캐시
     private final ConcurrentHashMap<Long, Set<String>> turnEndConfirmations = new ConcurrentHashMap<>();
@@ -114,6 +115,9 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
 
         // 턴 정보 및 주식 데이터 전송
         sendTurnData(gameRoomId, nextTurn, nextTurnEndTime);
+
+        // 모든 플레이어의 투자 정보 업데이트 전송
+        tradeService.sendTurnInvestmentUpdates(gameRoom);
 
     }
 

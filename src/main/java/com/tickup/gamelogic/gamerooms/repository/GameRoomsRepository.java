@@ -15,18 +15,6 @@ import java.util.List;
 
 @Repository
 public interface GameRoomsRepository extends JpaRepository<GameRooms, Long> {
-    @Modifying
-    @Transactional
-    @Query("UPDATE GameRooms g " +
-            "SET g.currentTurn = :current_turn, " +
-            "    g.currentTurnStartTime = :current_turn_start_time," +
-            "    g.remainingTime = :remaining_time " +
-            "WHERE g.gameRoomsId = :game_rooms_id")
-    void updateGameRoomsState(@Param("game_rooms_id") Long gameRoomsId,
-                              @Param("current_turn") int currentTurn,
-                              @Param("current_turn_start_time") LocalDateTime currentTurnStartTime,
-                              @Param("remaining_time") int remainingTime);
-
     @Query("SELECT ci.ticker FROM GameRooms gr " +
             "JOIN gr.companyInfos ci " +
             "WHERE gr.gameRoomsId = :gameRoomId")

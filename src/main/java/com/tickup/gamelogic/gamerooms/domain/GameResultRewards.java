@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class GameResultRewards {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameResultRewardsId;
+    private Long gameResultRewardsId;
 
     @Column(nullable = false)
     private int playerRank;

@@ -1,7 +1,6 @@
-package com.tickup.gamelogic.gamerooms.Response;
+package com.tickup.gamelogic.gamerooms.response;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
-import com.tickup.gamelogic.gamerooms.domain.GameRules;
 
 import java.time.LocalDateTime;
 

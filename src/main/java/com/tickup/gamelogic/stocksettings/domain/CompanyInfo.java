@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class CompanyInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long companyInfoId;
+    private Long companyInfoId;
 
     @Column(nullable = false, unique = true)
     private String ticker;

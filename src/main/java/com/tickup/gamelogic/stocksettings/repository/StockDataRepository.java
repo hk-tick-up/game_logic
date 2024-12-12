@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface StockDataRepository extends JpaRepository<StockData, Long> {
@@ -24,4 +26,21 @@ public interface StockDataRepository extends JpaRepository<StockData, Long> {
             @Param("turn") int turn,
             @Param("tickers") List<String> tickers
     );
+
+    @Query("SELECT sd.stockPrice FROM StockData sd " +
+            "WHERE sd.gameRooms.gameRoomsId = :gameRoomsId " +
+            "AND sd.ticker = :ticker " +
+            "AND sd.turn = :turn"
+    )
+    List<Integer> findStockPriceByGameRoomsIdAndTickerAndTurn(
+            @Param("gameRoomsId") Long gameRoomsId,
+            @Param("ticker") String ticker,
+            @Param("turn") int turn
+    );
+
+    @Query("SELECT s FROM StockData s " +
+            "WHERE s.gameRooms.gameRoomsId = :gameRoomId " +
+            "AND s.turn = :turn")
+    List<StockData> findAllByGameRoomAndTurn(@Param("gameRoomId") Long gameRoomId, @Param("turn") int turn);
+
 }

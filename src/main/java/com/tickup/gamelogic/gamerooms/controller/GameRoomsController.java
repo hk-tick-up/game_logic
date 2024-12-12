@@ -1,9 +1,9 @@
 package com.tickup.gamelogic.gamerooms.controller;
 
-import com.tickup.gamelogic.gamerooms.Request.GameStateUpdateRequest;
-import com.tickup.gamelogic.gamerooms.Request.InitGameRoomRequest;
-import com.tickup.gamelogic.gamerooms.Response.InitGameProcessResponse;
-import com.tickup.gamelogic.gamerooms.Response.InitGameRoomResponse;
+import com.tickup.gamelogic.gamerooms.request.GameStateUpdateRequest;
+import com.tickup.gamelogic.gamerooms.request.InitGameRoomRequest;
+import com.tickup.gamelogic.gamerooms.response.InitGameProcessResponse;
+import com.tickup.gamelogic.gamerooms.response.InitGameRoomResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.service.GameRoomServiceImpl;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/gamelogic")
 
+@Controller
 @Slf4j
 public class GameRoomsController {
 

@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.gamerooms.Request;
+package com.tickup.gamelogic.gamerooms.request;
 
 import java.time.LocalDateTime;
 

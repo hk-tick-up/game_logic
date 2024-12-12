@@ -1,23 +1,19 @@
 package com.tickup.gamelogic.gamerooms.service;
 
-import com.tickup.gamelogic.gamerooms.Request.InitGameProcessRequest;
-import com.tickup.gamelogic.gamerooms.Request.InitGameRoomRequest;
-import com.tickup.gamelogic.gamerooms.Response.InitGameProcessResponse;
-import com.tickup.gamelogic.gamerooms.Response.InitGameRoomResponse;
+import com.tickup.gamelogic.gamerooms.request.InitGameRoomRequest;
+import com.tickup.gamelogic.gamerooms.response.InitGameProcessResponse;
+import com.tickup.gamelogic.gamerooms.response.InitGameRoomResponse;
 import com.tickup.gamelogic.gamerooms.domain.CurrentGameState;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.domain.GameRules;
 import com.tickup.gamelogic.gamerooms.domain.GameType;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.repository.GameRulesRepository;
-import com.tickup.gamelogic.playersinfo.Repository.CurrentPlayersInfoRepository;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -62,6 +58,7 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
                     .balance(gameRules.getInitSeedMoney())
                     .netAssets(gameRules.getInitSeedMoney()) // 순 자신은 처음에 시드머니와 동일
                     .returnRate(0)
+                    .initialAssets(gameRules.getInitSeedMoney()) // 초기 자산은 시드머니와 동일
                     .valuationAmount(0)
                     .currentRank(null)
                     .isTurnEnd(false)

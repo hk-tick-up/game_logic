@@ -67,6 +67,7 @@ public class GameRooms {
     }
 
     @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CompanyInfo> companyInfos = new ArrayList<>();
     public void addCompanyInfo(CompanyInfo companyInfo) {
         companyInfos.add(companyInfo);

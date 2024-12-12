@@ -35,13 +35,13 @@ public class StockData {
     private Date targetDate;
 
     @Column(nullable = false)
-    private long stockPrice;
+    private int stockPrice;
 
     @Column
     private double changeRate;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "game_room", referencedColumnName = "gameRoomsId")
+    @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRooms;
 
 }

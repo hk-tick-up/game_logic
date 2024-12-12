@@ -1,9 +1,6 @@
-package com.tickup.gamelogic.gamerooms.Response;
-
-import com.tickup.gamelogic.gamerooms.domain.GameRooms;
+package com.tickup.gamelogic.gamerooms.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record GameStateUpdateResponse(
         Long gameRoomId,
