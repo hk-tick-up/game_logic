@@ -22,7 +22,7 @@ import java.util.Date;
 public class GameResults {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameResultsId;
+    private Long gameResultsId;
 
     @Column(nullable = false)
     private String userId;
@@ -38,7 +38,7 @@ public class GameResults {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

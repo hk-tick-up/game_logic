@@ -1,4 +1,4 @@
-package com.tickup.gamelogic.gamesettings.domain;
+package com.tickup.gamelogic.stocksettings.domain;
 
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import jakarta.persistence.*;
@@ -23,14 +23,14 @@ import java.util.Date;
 public class GameEvents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameEventsId;
+    private Long gameEventsId;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String eventContents;
 
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "stock_datas_id")
-    private StockDatas stockDatasId;
+    @OneToOne
+    @JoinColumn(nullable = false, name = "stock_data_id")
+    private StockData stockData;
 
     @Column(nullable = false)
     private String ticker;
@@ -43,5 +43,5 @@ public class GameEvents {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
 }

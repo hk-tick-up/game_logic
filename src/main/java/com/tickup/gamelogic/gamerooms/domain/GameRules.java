@@ -20,11 +20,14 @@ import lombok.NoArgsConstructor;
 public class GameRules {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameRulesId;
+    private Long gameRulesId;
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private GameType gameType;
+
+    @Column(nullable = false)
+    private boolean isPublic;
 
     @Column(nullable = false)
     private int maxPlayers;
@@ -33,7 +36,7 @@ public class GameRules {
     private int totalTurns;
 
     @Column(nullable = false)
-    private int turnTimeLimit;
+    private int remainingTime;
 
     @Column(nullable = false)
     private int initSeedMoney;

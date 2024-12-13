@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class GameResultRewards {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long gameResultRewardsId;
+    private Long gameResultRewardsId;
 
     @Column(nullable = false)
     private int playerRank;
@@ -30,7 +30,7 @@ public class GameResultRewards {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "game_rules_id", referencedColumnName = "gameRulesId")
-    private GameRules gameRulesId;
+    private GameRules gameRules;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

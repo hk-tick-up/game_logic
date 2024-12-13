@@ -7,39 +7,39 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/*
- * Class name: PurchaseShares
- * Summary: PurchaseShares JPA entity class
- * Date: 2024.11.20
- * Write by: 양예현
- */
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PurchaseShares {
-
+public class TradeLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long purchaseSharesId;
+    private Long tradeLogId;
 
     @Column(nullable = false)
-    private String userId;
+    private String userId; // 사용자 ID
 
     @Column(nullable = false)
-    private String ticker;
+    private String companyName; // 주식 이름
 
     @Column(nullable = false)
-    private int shares;
+    private int shares; // 거래된 주식 수량
 
     @Column(nullable = false)
-    private int purchasePrice;
+    private int price; // 거래된 가격 (매수/매도 시점의 가격)
 
     @Column(nullable = false)
-    private int purchaseTurn;
+    private int remainingFunds; // 그 당시 남은 가격
 
-    @ManyToOne
+    @Column(nullable = false)
+    private int turn; // 거래가 발생한 턴
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TradeType tradeType; // 매수/매도 구분 (BUY/SELL)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
-    private GameRooms gameRoomsId;
+    private GameRooms gameRooms;
 }
