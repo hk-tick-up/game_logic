@@ -10,5 +10,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompanyInfoRepository extends JpaRepository<CompanyInfo, Long> {
+    @Query("SELECT ci.companyName FROM CompanyInfo ci " +
+            "WHERE ci.gameRooms.gameRoomsId = :gameRoomId "+
+            "AND ci.ticker = :ticker"
+    )
+    String findCompanyNameByGameRoomIdAndTicker(@Param("gameRoomId") Long gameRoomId, @Param("ticker") String ticker);
 
 }

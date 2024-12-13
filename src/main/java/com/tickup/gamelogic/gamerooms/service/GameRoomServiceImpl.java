@@ -4,11 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tickup.gamelogic.gamerooms.request.GameStateUpdateRequest;
+import com.tickup.gamelogic.gamerooms.response.GameEndResponse;
 import com.tickup.gamelogic.gamerooms.response.GameStateUpdateResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
 import com.tickup.gamelogic.gamerooms.response.RankingResponse;
+import com.tickup.gamelogic.infrastructure.ReportApiClient;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
+import com.tickup.gamelogic.playersinfo.request.GameReportRequest;
+import com.tickup.gamelogic.playersinfo.response.ReportResponse;
+import com.tickup.gamelogic.playersinfo.service.GameReportServiceImpl;
 import com.tickup.gamelogic.playersinfo.service.RankingServiceImpl;
 import com.tickup.gamelogic.playersinfo.service.TradeServiceImpl;
 import com.tickup.gamelogic.stocksettings.service.StockSettingsServiceImpl;
@@ -35,8 +40,11 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
     private final StockSettingsServiceImpl stockSettingsService;
     private final TradeServiceImpl tradeService;
     private final RankingServiceImpl rankingService;
+    private final GameReportServiceImpl gameReportService;
 
     private final SimpMessagingTemplate messagingTemplate;
+
+    private final ReportApiClient reportApiClient;
 
     // 게임방별 턴 종료 확인을 위한 캐시
     private final ConcurrentHashMap<Long, Set<String>> turnEndConfirmations = new ConcurrentHashMap<>();
@@ -109,6 +117,13 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
 
         // 다음 턴 정보 계산
         int nextTurn = gameRoom.getCurrentTurn() + 1;
+        log.info("Current turn: {}, Total turn: {}", gameRoom.getCurrentTurn(), gameRoom.getTotalTurn());
+
+        if (nextTurn > gameRoom.getTotalTurn()) {
+            processGameEnd(gameRoom);
+            return;
+        }
+
         LocalDateTime nextTurnEndTime = LocalDateTime.now().plusSeconds(gameRoom.getRemainingTime());
 
         // 게임룸 업데이트
@@ -176,4 +191,50 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
                 gameRoom.getGameRoomsId(), rankings.size());
     }
 
+    private void processGameEnd(GameRooms gameRoom) {
+        log.info("Processing game end for game room: {}", gameRoom.getGameRoomsId());
+
+        // 각 플레이어의 리포트 생성 및 전송
+        for (CurrentPlayersInfo player : gameRoom.getCurrentPlayersInfos()) {
+            try {
+                List<GameReportRequest> report = gameReportService.createGameReport(gameRoom, player.getUserId());
+                ReportResponse response = reportApiClient.sendGameReport(report, player.getUserId(), gameRoom.getGameRoomsId());
+
+                // 리포트 응답 처리
+                handleReportResponse(gameRoom, player, response);
+
+                log.info("Successfully processed game end report for player: {}", player.getUserId());
+                log.info("Report response with: {}", response);
+            } catch (Exception e) {
+                log.error("Failed to process game end report for player: {}", player.getUserId(), e);
+                // 실패 처리 (예: 재시도 로직 또는 에러 알림)
+            }
+        }
+
+        // 게임 상태 업데이트
+        gameRoom.endGame();
+
+        // 게임 종료 알림
+        sendGameEndNotification(gameRoom);
+
+        // 게임방 캐시 정리
+        cleanupGameRoom(gameRoom.getGameRoomsId());
+    }
+
+    private void handleReportResponse(GameRooms gameRoom, CurrentPlayersInfo player, ReportResponse response) {
+        messagingTemplate.convertAndSend(
+                "/topic/gameRoom/" + gameRoom.getGameRoomsId() + "/player/" + player.getUserId() + "/report",
+                response
+        );
+        log.info("Sent report response to player: {}", player.getUserId());
+    }
+
+    private void sendGameEndNotification(GameRooms gameRoom) {
+        GameEndResponse notification = GameEndResponse.from(gameRoom);
+        messagingTemplate.convertAndSend(
+                "/topic/gameRoom/" + gameRoom.getGameRoomsId() + "/gameEnd",
+                notification
+        );
+        log.info("Sent game end notification for game room: {}", gameRoom.getGameRoomsId());
+    }
 }

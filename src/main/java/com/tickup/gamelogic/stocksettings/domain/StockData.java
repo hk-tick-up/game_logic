@@ -29,6 +29,9 @@ public class StockData {
     private String ticker;
 
     @Column(nullable = false)
+    private String companyName;
+
+    @Column(nullable = false)
     private int turn;
 
     @Column(nullable = false)

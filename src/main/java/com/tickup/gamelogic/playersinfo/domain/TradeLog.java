@@ -21,13 +21,16 @@ public class TradeLog {
     private String userId; // 사용자 ID
 
     @Column(nullable = false)
-    private String ticker; // 주식 티커
+    private String companyName; // 주식 이름
 
     @Column(nullable = false)
     private int shares; // 거래된 주식 수량
 
     @Column(nullable = false)
     private int price; // 거래된 가격 (매수/매도 시점의 가격)
+
+    @Column(nullable = false)
+    private int remainingFunds; // 그 당시 남은 가격
 
     @Column(nullable = false)
     private int turn; // 거래가 발생한 턴

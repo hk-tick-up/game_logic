@@ -29,7 +29,7 @@ public class CompanyInfo {
     @Column(nullable = false)
     private String companyName;
 
-    @Column(nullable = false)
+    @Column
     private String industry;
 
     @ManyToOne

@@ -15,6 +15,7 @@ import com.tickup.gamelogic.playersinfo.response.InvestmentDetail;
 import com.tickup.gamelogic.playersinfo.response.MyInvestmentResponse;
 import com.tickup.gamelogic.playersinfo.response.TradeResponse;
 import com.tickup.gamelogic.stocksettings.domain.StockData;
+import com.tickup.gamelogic.stocksettings.repository.CompanyInfoRepository;
 import com.tickup.gamelogic.stocksettings.repository.StockDataRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class TradeServiceImpl implements TradeService {
     private final GameRoomsRepository gameRoomsRepository;
     private final StockDataRepository stockDataRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final CompanyInfoRepository companyInfoRepository;
 
     @Override
     public TradeResponse processTrade(Long gameRoomId, String userId, String ticker, int shares, TradeType tradeType) {
@@ -58,7 +60,7 @@ public class TradeServiceImpl implements TradeService {
 
             updatePlayerStats(playerInfo, gameRoom);
             List<InvestmentDetail> investments = getInvestmentDetails(gameRoomId, userId);
-            saveTradeLog(gameRoom, userId, ticker, shares, pricePerShare, tradeType);
+            saveTradeLog(gameRoom, userId, ticker, shares, pricePerShare, tradeType, playerInfo.getBalance());
 
             return TradeResponse.from(playerInfo, investments, true, getTradeSummary(tradeType));
         } catch (IllegalArgumentException e) {
@@ -172,16 +174,19 @@ public class TradeServiceImpl implements TradeService {
                 .toList();
     }
 
-    private void saveTradeLog(GameRooms gameRoom, String userId, String ticker, int shares, int price, TradeType tradeType) {
+    private void saveTradeLog(GameRooms gameRoom, String userId, String ticker, int shares, int price, TradeType tradeType, int balance) {
+        String companyName = companyInfoRepository.findCompanyNameByGameRoomIdAndTicker(gameRoom.getGameRoomsId(), ticker);
+
         tradeLogRepository.save(
                 TradeLog.builder()
                         .userId(userId)
-                        .ticker(ticker)
+                        .companyName(companyName)
                         .shares(shares)
                         .price(price)
                         .turn(gameRoom.getCurrentTurn())
                         .tradeType(tradeType)
                         .gameRooms(gameRoom)
+                        .remainingFunds(balance)
                         .build()
         );
     }
