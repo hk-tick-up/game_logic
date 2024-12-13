@@ -198,7 +198,7 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         for (CurrentPlayersInfo player : gameRoom.getCurrentPlayersInfos()) {
             try {
                 List<GameReportRequest> report = gameReportService.createGameReport(gameRoom, player.getUserId());
-                ReportResponse response = reportApiClient.sendGameReport(report, player.getUserId(), gameRoom.getGameRoomsId());
+                ReportResponse response = reportApiClient.sendTradeLog(report, player.getUserId(), gameRoom.getGameRoomsId());
 
                 // 리포트 응답 처리
                 handleReportResponse(gameRoom, player, response);

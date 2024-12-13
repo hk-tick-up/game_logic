@@ -117,9 +117,13 @@ public class TradeServiceImpl implements TradeService {
 
     private OwnedShares createOwnedShares(GameRooms gameRoom, String userId, String ticker) {
         log.info("Creating new OwnedShares: gameRoomId={}, userId={}, ticker={}", gameRoom.getGameRoomsId(), userId, ticker);
+
+        String companyName = companyInfoRepository.findCompanyNameByGameRoomIdAndTicker(gameRoom.getGameRoomsId(), ticker);
+
         OwnedShares newOwnedShares = OwnedShares.builder()
                 .userId(userId)
                 .ticker(ticker)
+                .companyName(companyName)
                 .shares(0)
                 .gameRooms(gameRoom)
                 .build();
@@ -138,7 +142,7 @@ public class TradeServiceImpl implements TradeService {
         playerInfo.updateReturnRate();
 
         ownedSharesRepository.saveAll(ownedShares);
-        playersInfoRepository.save(playerInfo);  // 이 부분이 없어서 변경사항이 DB에 반영되지 않았을 것입니다
+        playersInfoRepository.save(playerInfo);
 
     }
 
@@ -193,17 +197,9 @@ public class TradeServiceImpl implements TradeService {
 
     @Override
     public void sendTurnInvestmentUpdates(GameRooms gameRoom) {
-//        gameRoom.getCurrentPlayersInfos().forEach(player -> {
-//            List<InvestmentDetail> investments = getInvestmentDetails(gameRoom.getGameRoomsId(), player.getUserId());
-//            MyInvestmentResponse response = MyInvestmentResponse.from(player, investments);
-//
-//            messagingTemplate.convertAndSend(
-//                    "/topic/gameRoom/" + gameRoom.getGameRoomsId() + "/player/" + player.getUserId() + "/investments",
-//                    response
-//            );
-//        });
+
         gameRoom.getCurrentPlayersInfos().forEach(player -> {
-            // 플레이어 정보를 새로 조회 (영속성 컨텍스트에서 최신 상태로)
+            // 플레이어 정보를 새로 조회
             CurrentPlayersInfo refreshedPlayer = playersInfoRepository.findById(player.getCurrentPlayersInfoId())
                     .orElseThrow(() -> new IllegalStateException("Player not found"));
 

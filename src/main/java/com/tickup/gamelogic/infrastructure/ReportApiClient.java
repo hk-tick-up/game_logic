@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -25,8 +24,10 @@ public class ReportApiClient {
     @Value("${mypage.api.url}")
     private String mypageUrl;
 
-    public ReportResponse sendGameReport(List<GameReportRequest> report, String userId, Long gameId) {
+    public ReportResponse sendTradeLog(List<GameReportRequest> report, String userId, Long gameId) {
         try {
+            log.info("Send trade log: {}", report);
+
             ResponseEntity<ReportResponse> response = restTemplate.postForEntity(
                     reportApiUrl,
                     report,
