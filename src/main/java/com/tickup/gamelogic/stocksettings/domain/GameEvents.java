@@ -25,10 +25,10 @@ public class GameEvents {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gameEventsId;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String eventContents;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(nullable = false, name = "stock_data_id")
     private StockData stockData;
 

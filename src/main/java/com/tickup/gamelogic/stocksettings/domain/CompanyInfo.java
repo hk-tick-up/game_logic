@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@PersistenceUnit(unitName = "default")
 public class CompanyInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,7 @@ public class CompanyInfo {
     @Column(nullable = false)
     private String companyName;
 
-    @Column
+    @Column(nullable = false)
     private String industry;
 
     @ManyToOne
