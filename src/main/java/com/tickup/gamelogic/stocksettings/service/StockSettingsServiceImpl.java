@@ -112,6 +112,7 @@ public class StockSettingsServiceImpl implements StockSettingsService {
                     .industry(corp.getCorpIndustry())
                     .gameRooms(GameRooms.builder().gameRoomsId(gameRoomId).build())
                     .build();
+            companyInfoRepository.save(companyInfo);
         });
 
         // 매턴 기업별 이벤트 택1
@@ -132,6 +133,7 @@ public class StockSettingsServiceImpl implements StockSettingsService {
                 // StockData 먼저 생성/저장 후 이걸 GameEvents에 넣어야 함
                 StockData stockData = StockData.builder()
                         .ticker(corp.getCorpTicker())
+                        .companyName(corp.getCorpName())
                         .turn(turn)
                         .targetDate(currentEvent.getEventDate())
                         .stockPrice(stockPrice)
