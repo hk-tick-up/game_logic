@@ -13,4 +13,5 @@ public interface GameRoomService {
     void updatePlayerCount(Long gameRoomId, int count);
     void cleanupGameRoom(Long gameRoomId);
     void sendTurnData(Long gameRoomId, int turn, LocalDateTime turnEndTime);
+    void sendRankingUpdate(GameRooms gameRoom);
 }

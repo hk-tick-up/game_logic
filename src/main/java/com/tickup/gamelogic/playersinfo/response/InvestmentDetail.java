@@ -4,6 +4,7 @@ import com.tickup.gamelogic.playersinfo.domain.OwnedShares;
 
 public record InvestmentDetail(
         String ticker,
+        String companyName,
         int shares,
         int pricePerShare,     // 현재 주가
         int valuationAmount,    // 평가 금액
@@ -13,6 +14,7 @@ public record InvestmentDetail(
     public static InvestmentDetail from(OwnedShares ownedShares, int currentPrice) {
         return new InvestmentDetail(
                 ownedShares.getTicker(),
+                ownedShares.getCompanyName(),
                 ownedShares.getShares(),
                 currentPrice, // 현재 주가
                 ownedShares.getShares() * currentPrice, // 평가 금액

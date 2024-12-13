@@ -26,6 +26,9 @@ public class CurrentPlayersInfo {
     private String userId;
 
     @Column(nullable = false)
+    private String userName;
+
+    @Column(nullable = false)
     private int balance; // 현재 보유한 금액
 
     @Column(nullable = false)
@@ -75,6 +78,11 @@ public class CurrentPlayersInfo {
         } else {
             this.returnRate = 0; // 초기 자산이 0인 경우 (예외 처리)
         }
+    }
+
+    // 순위 업데이트 메서드
+    public void updateRank(int newRank) {
+        this.currentRank = newRank;
     }
 
 }

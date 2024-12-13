@@ -1,11 +1,13 @@
 package com.tickup.gamelogic.playersinfo.repository;
 
+import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.playersinfo.domain.CurrentPlayersInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,4 +18,10 @@ public interface CurrentPlayersInfoRepository extends JpaRepository<CurrentPlaye
     )
     Optional<CurrentPlayersInfo> findByGameRoomIdAndUserId(@Param("gameRoomId") Long gameRoomId, @Param("userId") String userId);
 
+
+    @Query("SELECT p FROM CurrentPlayersInfo p " +
+            "WHERE p.gameRooms = :gameRooms " +
+            "ORDER BY p.returnRate DESC"
+    )
+    List<CurrentPlayersInfo> findAllByGameRoomsOrderByReturnRateDesc(GameRooms gameRooms);
 }

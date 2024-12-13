@@ -92,5 +92,9 @@ public class GameRooms {
             this.currentGameState = CurrentGameState.GAME_END;
         }
     }
+
+    public void endGame() {
+        this.currentGameState = CurrentGameState.GAME_END;
+    }
 }
 

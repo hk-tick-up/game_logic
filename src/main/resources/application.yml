@@ -22,10 +22,18 @@ spring:
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-    show-sql: true
     properties:
       format-sql: true
+#    show-sql: true
 
+# Report API Configuration
+report:
+  api:
+    url: "http://ec2-15-152-37-58.ap-northeast-3.compute.amazonaws.com:5000/cluster"
+
+mypage:
+  api:
+    url: "http://your-api-endpoint/mypage"
 
 #  sql:
 #    init:

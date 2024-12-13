@@ -24,6 +24,9 @@ public class OwnedShares {
     private String ticker; // 주식 티커
 
     @Column(nullable = false)
+    private String companyName;
+
+    @Column(nullable = false)
     private int shares; // 총 보유 주식량
 
     @Column(nullable = false)
