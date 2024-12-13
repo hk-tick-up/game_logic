@@ -36,11 +36,17 @@ spring:
     enabled: false
 
 
-logging:
-  level:
-    org:
-      hibernate:
-        cfg.AnnotationBinder: DEBUG
-#        SQL: DEBUG
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        transaction: WARN
+#        SQL: WARN
+#        type:
+#          descriptor:
+#            sql: WARN
+#      springframework:
+#        transaction: DEBUG
+#        cfg.AnnotationBinder: DEBUG
 #        tool:
 #          hbm2ddl: TRACE

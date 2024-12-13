@@ -84,7 +84,7 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
         // 게임 시나리오 설정
         stockSettingsService.setGameScenario(gameRoomId, gameRooms.getCurrentTurn());
         // 1턴 데이터와 초기화 데이터 WebSocket으로 전송
-//        stockSettingsService.sendStockUpdate(gameRoomId, gameRooms.getCurrentTurn());
+        stockSettingsService.sendStockUpdate(gameRoomId, gameRooms.getCurrentTurn());
 
         return InitGameProcessResponse.from(gameRooms);
     }

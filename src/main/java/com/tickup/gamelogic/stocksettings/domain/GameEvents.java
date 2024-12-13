@@ -25,7 +25,7 @@ public class GameEvents {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long gameEventsId;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String eventContents;
 
     @OneToOne
@@ -41,7 +41,7 @@ public class GameEvents {
     @Column(nullable = false)
     private Date targetDate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false, name = "game_rooms_id", referencedColumnName = "gameRoomsId")
     private GameRooms gameRooms;
 }

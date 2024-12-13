@@ -62,7 +62,7 @@ public class MLDataSourceConfig {
                         "hibernate.dialect", "org.hibernate.dialect.MySQLDialect",  // 데이터베이스 플랫폼
                         "hibernate.hbm2ddl.auto", "none",                        // ddl-auto 설정
                         "hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl",  // 네이밍 전략
-                        "hibernate.show_sql", "true",                              // SQL 로그 표시 여부
+                        "hibernate.show_sql", "false",                              // SQL 로그 표시 여부
                         "hibernate.format_sql", "true"                             // SQL 포맷팅 여부
                 ))
                 .build();

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -20,7 +21,7 @@ public class MLStockEvent {
     private int eventId;
 
     @Column(nullable = false, name = "event_date")
-    private LocalDate eventDate;
+    private Date eventDate;
 
     @Column(nullable = false, name = "corp_ticker")
     private String corpTicker;

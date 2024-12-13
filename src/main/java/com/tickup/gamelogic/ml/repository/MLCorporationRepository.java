@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface MLCorporationRepository extends JpaRepository<MLCorporation, Long> {
-    @Query("SELECT c.corpTicker FROM MLCorporation c")
-    List<String> findAllCorpTickers();
+//    @Query("SELECT c FROM MLCorporation c")
+//    List<String> findAllCorps();
+//    @Query("SELECT c.corpTicker FROM MLCorporation c")
+//    List<String> findAllCorpTickers();
 }
