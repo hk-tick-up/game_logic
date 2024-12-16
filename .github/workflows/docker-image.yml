@@ -40,6 +40,8 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # 5. Gradle로 도커 이미지 생성
+    - name: Give gradlew execute permission
+      run: chmod +x ./gradlew
     - name: Build Docker Image using bootBuildImage
       run: ./gradlew bootBuildImage --imageName=gksderrick/tickup-backend-gamelogic:latest
 
