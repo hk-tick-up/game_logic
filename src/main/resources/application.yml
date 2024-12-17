@@ -1,0 +1,63 @@
+server:
+  port: 8009
+
+spring:
+  application:
+    name: game-logic
+
+
+  #MySQL ??
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3308/tickup_gamelogic?createDatabaseIfNotExist=true
+    username: root
+    password: tickup@db-1
+
+  ml-datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://15.152.37.58:3306/tickup
+    username: mlops
+    password: 1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      format-sql: true
+#    show-sql: true
+
+# Report API Configuration
+report:
+  api:
+    url: "http://ec2-15-152-37-58.ap-northeast-3.compute.amazonaws.com:5000/cluster"
+
+mypage:
+  api:
+    url: "http://your-api-endpoint/mypage"
+
+#  sql:
+#    init:
+#      mode: always
+
+
+  jmx:
+    enabled: false
+
+
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        transaction: WARN
+#        SQL: WARN
+#        type:
+#          descriptor:
+#            sql: WARN
+#      springframework:
+#        transaction: DEBUG
+#        cfg.AnnotationBinder: DEBUG
+#        tool:
+#          hbm2ddl: TRACE

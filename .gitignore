@@ -30,6 +30,7 @@ out/
 .idea/
 *.iml
 
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -57,5 +58,8 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
+### env 파일 ###
+.env
+.env.*
 
 
