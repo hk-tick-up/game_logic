@@ -26,7 +26,7 @@ public class MLStockEvent {
     @Column(nullable = false, name = "corp_ticker")
     private String corpTicker;
 
-    @Column(nullable = false, name = "change")
+    @Column(nullable = false, name = "`change`")
     private int priceChangeBeforeClosed;
 
     @Column(nullable = false, name = "close")

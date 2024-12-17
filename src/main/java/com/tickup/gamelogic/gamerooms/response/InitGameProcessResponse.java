@@ -5,6 +5,7 @@ import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import java.time.LocalDateTime;
 
 public record InitGameProcessResponse(
+        Long gameRoomId,
        int currentTurn,
        int totalTurns,
        LocalDateTime now,
@@ -13,6 +14,7 @@ public record InitGameProcessResponse(
 ) {
     public static InitGameProcessResponse from (GameRooms gameRooms) {
         return new InitGameProcessResponse(
+                gameRooms.getGameRoomsId(),
                 gameRooms.getCurrentTurn(),
                 gameRooms.getTotalTurn(),
                 LocalDateTime.now(),

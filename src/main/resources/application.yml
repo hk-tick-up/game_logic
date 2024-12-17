@@ -1,3 +1,6 @@
+server:
+  port: 8009
+
 spring:
   application:
     name: game-logic
@@ -6,9 +9,9 @@ spring:
   #MySQL ??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3306/tickuptest?createDatabaseIfNotExist=true
+    jdbc-url: jdbc:mysql://mysql:3306/tickup_gamelogic?createDatabaseIfNotExist=true
     username: root
-    password: root
+    password: tickup@db-1
 
   ml-datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
