@@ -7,8 +7,6 @@ import com.tickup.gamelogic.playersinfo.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -25,10 +23,6 @@ public class TradeController {
             @RequestBody TradeRequest request
     ) {
 
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String authenticatedUserId = authentication.getName();
-
         TradeResponse response = tradeService.processTrade(
                 gameRoomId,
                 request.userId(),
@@ -44,11 +38,7 @@ public class TradeController {
             @PathVariable Long gameRoomId,
             @RequestParam String userId
     ) {
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String authenticatedUserId = authentication.getName();
-
-        MyInvestmentResponse response = tradeService.getInvestments(gameRoomId, authenticatedUserId);
+        MyInvestmentResponse response = tradeService.getInvestments(gameRoomId, userId);
         return ResponseEntity.ok(response);
     }
 

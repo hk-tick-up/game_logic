@@ -198,13 +198,13 @@ public class GameRoomServiceImpl implements GameRoomService, ApplicationListener
         for (CurrentPlayersInfo player : gameRoom.getCurrentPlayersInfos()) {
             try {
                 List<GameReportRequest> report = gameReportService.createGameReport(gameRoom, player.getUserId());
-                ReportResponse response = reportApiClient.sendTradeLog(report, player.getUserId(), gameRoom.getGameRoomsId());
+//                ReportResponse response = reportApiClient.sendTradeLog(report, player.getUserId(), gameRoom.getGameRoomsId());
 
-                // 리포트 응답 처리
-                handleReportResponse(gameRoom, player, response);
+                // 클러스터 ID 판별 및 저장
+                reportApiClient.processTradeLogAndSaveCluster(report, player.getUserId(), gameRoom.getGameRoomsId());
 
-                log.info("Successfully processed game end report for player: {}", player.getUserId());
-                log.info("Report response with: {}", response);
+                log.info("Successfully processed trade log and saved cluster for player: {}", player.getUserId());
+
             } catch (Exception e) {
                 log.error("Failed to process game end report for player: {}", player.getUserId(), e);
                 // 실패 처리 (예: 재시도 로직 또는 에러 알림)

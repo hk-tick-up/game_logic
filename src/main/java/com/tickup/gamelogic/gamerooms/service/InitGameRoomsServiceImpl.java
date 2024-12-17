@@ -70,7 +70,7 @@ public class InitGameRoomsServiceImpl implements InitGameRoomsService {
         GameRooms newGameRoom = gameRoomRepository.save(gameRoom);
 
         // 게임 시나리오 설정
-//        stockSettingsService.setGameScenario(newGameRoom.getGameRoomsId(), newGameRoom.getCurrentTurn());
+
 
        return InitGameRoomResponse.from(newGameRoom);
     }

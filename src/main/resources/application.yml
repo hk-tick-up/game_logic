@@ -9,7 +9,7 @@ spring:
   #MySQL ??
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://mysql:3306/tickup_gamelogic?createDatabaseIfNotExist=true
+    jdbc-url: jdbc:mysql://localhost:3308/tickup_gamelogic?createDatabaseIfNotExist=true
     username: root
     password: tickup@db-1
 

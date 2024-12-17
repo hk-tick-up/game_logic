@@ -3,11 +3,13 @@ package com.tickup.gamelogic.config.security;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,36 +31,49 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String urlPrefix = "/api/v1/gamelogic";
+    private final String urlPrefix = "/api/v1/gamelogic"; // WaitingRoom의 URL prefix로 변경
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(
-                                    "/ws/**", // WebSocket 엔드포인트 추가
-                                    "/topic/**", // WebSocket Topic 추가
-                                    "/app/**" // WebSocket Application Destination 추가
+                    auth
+                            .requestMatchers(
+                                    "/**",
+                                    "/game/**",
+                                    "/ws/**",
+                                    "/topic/**",
+                                    "/app/**"
 
-                                    /**
-                                     * 내가 쓰는 api 주소 추가하기
-                                     */
 
 
                             ).permitAll()
+                            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 요청 허용
                             .anyRequest().authenticated();
                 })
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(JwtDecoders.fromIssuerLocation("https://your-auth-server.com")))
-                    )
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                        .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                );
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider) {
+                    @Override
+                    protected boolean shouldNotFilter(HttpServletRequest request) {
+                        String path = request.getRequestURI();
+                        return path.startsWith("/ws") ||
+                                path.startsWith("/socket") ||
+                                path.startsWith("/topic") ||
+                                path.startsWith("/game") ||
+                                path.startsWith("/app") ||
+                                path.startsWith("/queue") ||
+                                path.startsWith("/user") ||
+                                path.startsWith("/api/v1/users/sign-in");
+                    }
+                }, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -66,18 +81,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of(
-                "Authorization",
-                "Content-Type",
-                "X-Requested-With",
-                "accept",
-                "Origin",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://192.168.1.6:3000",
+                "http://localhost:3000",
+                "http://192.168.45.113:3000"
         ));
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of(
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Credentials",
+                "Authorization"
+        ));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -85,15 +100,15 @@ public class SecurityConfig {
         return source;
     }
 
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
-        String jwtSetUri = "https://your-auth-server.com/.well-known/jwks.json"; // JWK 공개 키 경로
-        return NimbusJwtDecoder.withJwkSetUri(jwtSetUri).build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }
