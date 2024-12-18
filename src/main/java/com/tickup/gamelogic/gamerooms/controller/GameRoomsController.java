@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/gamelogic")
 
 @Controller
@@ -37,7 +37,10 @@ public class GameRoomsController {
      */
     @PostMapping
     public ResponseEntity<InitGameRoomResponse> initGameRoom(@RequestBody InitGameRoomRequest request) {
+        log.info(String.valueOf(request));
         InitGameRoomResponse response = initGameRoomsService.initGameRoom(request);
+
+        log.info(String.valueOf(response));
         return ResponseEntity.ok(response);
     }
 

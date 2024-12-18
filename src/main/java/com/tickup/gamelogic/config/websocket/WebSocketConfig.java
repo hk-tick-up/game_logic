@@ -27,7 +27,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // WebSocket 연결 엔드포인트
-                .setAllowedOrigins("http://localhost:3000") // 허용된 도메인
+                .setAllowedOrigins(
+                        "http://localhost:3000",
+                        "http://192.168.1.6:3000",
+                        "http://192.168.45.94:3000"
+                ) // 허용된 도메인
                 .setHandshakeHandler(new DefaultHandshakeHandler()) // 기본 핸드셰이크 처리
                 .withSockJS() // SockJS 지원 활성화
                 ; // 쿠키 기반 세션 필요

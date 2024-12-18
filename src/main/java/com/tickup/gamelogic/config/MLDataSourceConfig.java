@@ -47,7 +47,9 @@ public class MLDataSourceConfig {
     @Bean(name = "mlDataSource")
     @ConfigurationProperties(prefix = "spring.ml-datasource")
     public DataSource dataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create()
+                .type(com.zaxxer.hikari.HikariDataSource.class)
+                .build();
     }
 
     @Bean(name = "mlEntityManagerFactory")

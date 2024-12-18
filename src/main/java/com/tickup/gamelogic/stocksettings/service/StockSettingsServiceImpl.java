@@ -97,48 +97,56 @@ public class StockSettingsServiceImpl implements StockSettingsService {
     }
 
     @Override
+    @Transactional
     public void setGameScenario(Long gameRoomId, int currentTurn) {
         final int MAX_CORP_COUNT = 4;
         final int MAX_TURN_COUNT = 5;
 
+        // 실제 GameRooms 엔티티를 조회
+        GameRooms gameRoom = gameRoomsRepository.findById(gameRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Game room not found: " + gameRoomId));
+        log.info("Setting game scenario for game room: {}", gameRoomId);
+
         // allCorpTickers로부터 n개 기업 선택
         List<MLCorporation> randomCorps = pickNRandomCorps(MAX_CORP_COUNT);
+        log.info("Selected {} corporations for game room {}", randomCorps.size(), gameRoomId);
 
         // CompanyInfo에 저장
-        randomCorps.forEach(corp -> {
+        List<CompanyInfo> savedCompanies = randomCorps.stream().map(corp -> {
             CompanyInfo companyInfo = CompanyInfo.builder()
                     .ticker(corp.getCorpTicker())
                     .companyName(corp.getCorpName())
                     .industry(corp.getCorpIndustry())
-                    .gameRooms(GameRooms.builder().gameRoomsId(gameRoomId).build())
+                    .gameRooms(gameRoom)  // 실제 엔티티 사용
                     .build();
-            companyInfoRepository.save(companyInfo);
-        });
+            CompanyInfo saved = companyInfoRepository.save(companyInfo);
+            log.info("Saved company info: {} for game room {}", saved.getTicker(), gameRoomId);
+            return saved;
+        }).collect(Collectors.toList());
 
-        // 매턴 기업별 이벤트 택1
-        // StockData에 전체 시나리오 저장
-        randomCorps.forEach(corp -> {
-            // corp.getCorpTicker() 기준으로 뽑은 이벤트 중 MAX_TURN_COUNT 만큼 선택
-            List<MLStockEvent> stockEvents = pickNRandomEvents(corp.getCorpTicker(), MAX_TURN_COUNT);
+        // 매턴 기업별 이벤트 생성
+        savedCompanies.forEach(company -> {
+            List<MLStockEvent> stockEvents = pickNRandomEvents(company.getTicker(), MAX_TURN_COUNT);
             int stockPrice = 0;
-            // GameEvents 테이블에 각 턴마다 1개 이벤트 저장
+
             for(int turn=1; turn<=MAX_TURN_COUNT; turn++) {
                 MLStockEvent currentEvent = stockEvents.get(turn-1);
-
                 double changeRate = getChangeRate(currentEvent);
-                if(turn == 1)
+
+                if(turn == 1) {
                     stockPrice = currentEvent.getClosedPrice();
-                else
+                } else {
                     stockPrice = (int) (stockPrice * (1 + changeRate/100));
-                // StockData 먼저 생성/저장 후 이걸 GameEvents에 넣어야 함
+                }
+
                 StockData stockData = StockData.builder()
-                        .ticker(corp.getCorpTicker())
-                        .companyName(corp.getCorpName())
+                        .ticker(company.getTicker())
+                        .companyName(company.getCompanyName())
                         .turn(turn)
                         .targetDate(currentEvent.getEventDate())
                         .stockPrice(stockPrice)
                         .changeRate(changeRate)
-                        .gameRooms(GameRooms.builder().gameRoomsId(gameRoomId).build())
+                        .gameRooms(gameRoom)  // 실제 엔티티 사용
                         .build();
                 StockData savedStockData = stockDataRepository.save(stockData);
 
@@ -148,21 +156,21 @@ public class StockSettingsServiceImpl implements StockSettingsService {
                         .ticker(savedStockData.getTicker())
                         .turn(turn)
                         .targetDate(savedStockData.getTargetDate())
-                        .gameRooms(savedStockData.getGameRooms())
+                        .gameRooms(gameRoom)  // 실제 엔티티 사용
                         .build();
                 GameEvents savedGameEvent = gameEventsRepository.save(gameEvents);
             }
         });
-        /*
-            매턴
-            기업별 이벤트 택1
-            호재/악재 + 변화수준 -> 주가 변동값 설정
-            get distinct event_id by corp_ticker from table StockEvent_tb
-            when corp_ticker = $current_corp_ticker VARCHAR(10)
-            event_id INT, `change` DECIMAL(10,6),
-        */
-    }
 
+        // 캐시 업데이트
+        gameRoomTickers.put(gameRoomId,
+                savedCompanies.stream()
+                        .map(CompanyInfo::getTicker)
+                        .collect(Collectors.toList())
+        );
+
+        log.info("Completed scenario setup for game room: {}", gameRoomId);
+    }
     private double getChangeRate(MLStockEvent currentEvent) {
         boolean sign = currentEvent.getPriceChangeSign() == 1;
         int size = currentEvent.getPriceChangeSize();

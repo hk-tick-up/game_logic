@@ -48,14 +48,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth
                             .requestMatchers(
-                                    "/**",
+                                    "/game",
                                     "/game/**",
                                     "/ws/**",
                                     "/topic/**",
-                                    "/app/**"
-
-
-
+                                    "/app/**",
+                                    "/queue/**",
+                                    "/user/**",
+                                    "/socket/**",
+                                    "/api",
+                                    "/api/**"
                             ).permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 요청 허용
                             .anyRequest().authenticated();
@@ -84,7 +86,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
                 "http://192.168.1.6:3000",
                 "http://localhost:3000",
-                "http://192.168.45.113:3000"
+                "http://192.168.45.94:3000"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

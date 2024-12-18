@@ -59,21 +59,21 @@ public class GameRooms {
     @Enumerated(EnumType.STRING)
     private GameType gameType;
 
-    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gameRooms", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<CurrentPlayersInfo> currentPlayersInfos = new ArrayList<>();
     public void addCurrentPlayersInfo(CurrentPlayersInfo currentPlayersInfo) {
         currentPlayersInfos.add(currentPlayersInfo);
     }
 
-    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gameRooms", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<CompanyInfo> companyInfos = new ArrayList<>();
     public void addCompanyInfo(CompanyInfo companyInfo) {
         companyInfos.add(companyInfo);
     }
 
-    @OneToMany(mappedBy = "gameRooms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gameRooms", orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<GameEvents> gameEvents = new ArrayList<>();
 

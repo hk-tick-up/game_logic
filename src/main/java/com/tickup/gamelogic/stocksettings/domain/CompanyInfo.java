@@ -24,7 +24,7 @@ public class CompanyInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyInfoId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String ticker;
 
     @Column(nullable = false)

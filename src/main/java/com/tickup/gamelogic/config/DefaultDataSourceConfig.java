@@ -45,7 +45,9 @@ public class DefaultDataSourceConfig {
     @Bean(name = "defaultDataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create()
+                .type(com.zaxxer.hikari.HikariDataSource.class)
+                .build();
     }
 
     @Primary

@@ -25,7 +25,7 @@ public class CurrentPlayersInfo {
     @Column(nullable = false)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String userName;
 
     @Column(nullable = false)

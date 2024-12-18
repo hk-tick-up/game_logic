@@ -7,17 +7,40 @@ spring:
 
 
   #MySQL ??
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    jdbc-url: jdbc:mysql://localhost:3308/tickup_gamelogic?createDatabaseIfNotExist=true
+#    username: root
+#    password: tickup@db-1
   datasource:
+    jdbc-url: jdbc:mysql://localhost:3307/tickup
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://localhost:3308/tickup_gamelogic?createDatabaseIfNotExist=true
     username: root
-    password: tickup@db-1
+    password: root123
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      pool-name: DefaultHikariCP
+      max-lifetime: 1200000
+      auto-commit: true
+
 
   ml-datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://15.152.37.58:3306/tickup
     username: mlops
     password: 1234
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      pool-name: DefaultHikariCP
+      max-lifetime: 1200000
+      auto-commit: true
+
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -47,17 +70,17 @@ mypage:
     enabled: false
 
 
-#logging:
-#  level:
-#    org:
-#      hibernate:
-#        transaction: WARN
-#        SQL: WARN
-#        type:
-#          descriptor:
-#            sql: WARN
-#      springframework:
-#        transaction: DEBUG
-#        cfg.AnnotationBinder: DEBUG
-#        tool:
-#          hbm2ddl: TRACE
+logging:
+  level:
+    org:
+      hibernate:
+        transaction: WARN
+        SQL: WARN
+        type:
+          descriptor:
+            sql: WARN
+      springframework:
+        transaction: DEBUG
+        cfg.AnnotationBinder: DEBUG
+        tool:
+          hbm2ddl: TRACE
