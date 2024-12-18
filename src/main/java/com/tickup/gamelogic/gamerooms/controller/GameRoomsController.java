@@ -1,15 +1,20 @@
 package com.tickup.gamelogic.gamerooms.controller;
 
+import com.tickup.gamelogic.config.security.JwtTokenProvider;
+import com.tickup.gamelogic.gamerooms.request.GameEndDataRequest;
 import com.tickup.gamelogic.gamerooms.request.GameStateUpdateRequest;
 import com.tickup.gamelogic.gamerooms.request.InitGameRoomRequest;
+import com.tickup.gamelogic.gamerooms.response.GameEndDataResponse;
 import com.tickup.gamelogic.gamerooms.response.InitGameProcessResponse;
 import com.tickup.gamelogic.gamerooms.response.InitGameRoomResponse;
 import com.tickup.gamelogic.gamerooms.domain.GameRooms;
 import com.tickup.gamelogic.gamerooms.repository.GameRoomsRepository;
+import com.tickup.gamelogic.gamerooms.service.GameEndServiceImpl;
 import com.tickup.gamelogic.gamerooms.service.GameRoomServiceImpl;
 import com.tickup.gamelogic.gamerooms.service.InitGameRoomsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -31,6 +36,8 @@ public class GameRoomsController {
     private final InitGameRoomsServiceImpl initGameRoomsService;
     private final GameRoomServiceImpl gameRoomService;
     private final GameRoomsRepository gameRoomsRepository;
+    private final GameEndServiceImpl gameEndService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 게임 방 초기화
@@ -94,6 +101,25 @@ public class GameRoomsController {
         LocalDateTime turnEndTime = gameRoom.getCurrentTurnEndTime();
 
         gameRoomService.sendTurnData(gameRoomId, currentTurn, turnEndTime);
+    }
+
+    /**
+     * 게임 엔딩 정보 출력 반환
+     */
+    @PostMapping("/{gameRoomId}/gameEndData")
+    public GameEndDataResponse sendGameEndData(@RequestBody GameEndDataRequest request,
+                                               @PathVariable("gameRoomId") Long gameRoomId,
+                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        // JWT 토큰 유효성 검증
+        String token = authorizationHeader.replace("Bearer ", "");
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new IllegalArgumentException("Invalid JWT token.");
+        }
+
+        // GameEndDataResponse 반환
+        return gameEndService.sendGameEndData(gameRoomId, request.userId());
+
     }
 
 }
